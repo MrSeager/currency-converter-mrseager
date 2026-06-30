@@ -7,8 +7,8 @@ export type CurrencyInfo = {
 export interface SectionOneProps {
     sendCurr: string;
     setSendCurr: (sendCurr: string) => void;
-    sendValue: number | '';
-    setSendValue: (sendValue: number | '') => void;
+    sendValue: number;
+    setSendValue: (sendValue: number) => void;
     receiveCurr: string;
     setReceiveCurr: (receiveCurr: string) => void;
     receiveValue: number;
