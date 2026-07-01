@@ -25,7 +25,7 @@ export default function SectionOne({
         <div className="w-full rounded-[10px] flex flex-col items-center justify-between bg-[#171719]">
             <div className="grid grid-cols-7 w-full items-center justify-between p-5">
                 <div className="col-span-3 flex flex-col gap-5 border border-white/25 bg-[#202022] rounded-[10px] px-4 py-3 duration-300 hover:border-white">
-                    <h2 className="w-full uppercase">Send</h2>
+                    <h2 className="w-full uppercase text-[#707072]">Send</h2>
                     <div className="w-full flex items-center justify-between gap-3">
                         <input 
                             type="number"
@@ -104,7 +104,7 @@ export default function SectionOne({
                     </button>
                 </div>
                 <div className="col-span-3 flex flex-col gap-5 border border-white/25 bg-[#202022] rounded-[10px] px-4 py-3 duration-300 hover:border-white">
-                    <h2 className="w-full uppercase">Receive</h2>
+                    <h2 className="w-full uppercase text-[#707072]">Receive</h2>
                     <div className="flex items-center justify-between gap-3">
                         <h2 className="text-[#cef737] text-[35px] font-semibold">{(sendValue * receiveValue).toFixed(4)}</h2>
 

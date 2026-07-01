@@ -2,12 +2,13 @@
 //Components
 import { useState, useEffect, useCallback } from "react";
 import SectionOne from "./SectionOne";
+import SectionTwo from "./SectionTwo";
 //Types
 import { CurrencyInfo } from "@/types/types";
 
 export default function MainPart() {
     const [sendCurr, setSendCurr] = useState<string>('USD');
-    const [sendValue, setSendValue] = useState<number>(1000);
+    const [sendValue, setSendValue] = useState<number>(10);
 
     const [receiveCurr, setReceiveCurr] = useState<string>('EUR');
     const [receiveValue, setReceiveValue] = useState<number>(1000);
@@ -98,6 +99,9 @@ export default function MainPart() {
                 sendCurrencyInfo={sendCurrencyInfo}
                 receiveCurrencyInfo={receiveCurrencyInfo}
                 currencies={currencies}
+            />
+            <SectionTwo 
+            
             />
         </main>
     );

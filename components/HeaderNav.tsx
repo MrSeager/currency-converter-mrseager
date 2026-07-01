@@ -115,7 +115,7 @@ export default function HeaderNav() {
           width={150}
           height={50}
         />
-        <h1 className="uppercase text-sm tracking-wide text-[#f8f8f9]/80">
+        <h1 className="uppercase text-sm tracking-wide text-[#707072]">
           55 Currencies &bull; EOD &bull; ECB Data
         </h1>
       </div>
