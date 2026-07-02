@@ -4,6 +4,11 @@ export type CurrencyInfo = {
     symbol: string;
 };
 
+export type HistoryProps = {
+    date: string; 
+    rate: number
+}
+
 export type CurrPageProps = 'history' | 'compare' | 'favorites' | 'log';
 
 export interface SectionOneProps {
@@ -21,6 +26,13 @@ export interface SectionOneProps {
     currencies: CurrencyInfo[];
 }
 
+export interface SectionTwoProps {
+    history: HistoryProps[];
+    receiveValue: number;
+    period: string;
+    setPeriod: (period: string) => void;
+}
+
 export interface SectionTwoItemProps {
     name: string;
     value: number;
@@ -36,4 +48,12 @@ export interface SectionTwoBtnPerProps {
     name: string;
     period: string;
     setPeriod: (period: string) => void;
+}
+
+export interface SectionTwoHistoryProps {
+    currPage: CurrPageProps;
+    period: string; 
+    setPeriod: (period: string) => void;
+    history: HistoryProps[];
+    receiveValue: number
 }

@@ -1,10 +1,10 @@
 'use client';
 //Components
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import SectionOne from "./SectionOne";
 import SectionTwo from "./SectionTwo";
 //Types
-import { CurrencyInfo } from "@/types/types";
+import { CurrencyInfo, HistoryProps } from "@/types/types";
 
 export default function MainPart() {
     const [sendCurr, setSendCurr] = useState<string>('USD');
@@ -16,6 +16,9 @@ export default function MainPart() {
     const [currencies, setCurrencies] = useState<CurrencyInfo[]>([]);
     const [rate, setRate] = useState<number | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+
+    const [period, setPeriod] = useState<string>('1d');
+    const [history, setHistory] = useState<HistoryProps[]>([]);
 
     const AVAILABLE_FLAGS = [
         'aed', 'ars', 'aud', 'bdt', 'bgn', 'bhd', 'brl', 'cad',
@@ -48,30 +51,85 @@ export default function MainPart() {
     }, []);
 
     // Fetch rate and calculate receive value
-    const fetchConversion = useCallback(async () => {
-        if (!sendCurr || !receiveCurr || !sendValue) return;
-
-        setLoading(true);
-        try {
-            const res = await fetch(
-                `https://api.frankfurter.dev/v2/rate/${sendCurr}/${receiveCurr}`
-        );
-        if (!res.ok) throw new Error('Failed to fetch rate');
-        const data = await res.json();
-
-        setRate(data.rate);
-        setReceiveValue(Number((data.rate).toFixed(4)));
-        } catch (err) {
-            console.error('Conversion error:', err);
-        } finally {
-            setLoading(false);
-        }
-    }, [sendCurr, receiveCurr, sendValue]);
-
-    // Recalculate when currency or amount changes
     useEffect(() => {
-        fetchConversion();
-    }, [fetchConversion]);
+        let cancelled = false;
+
+        const fetchRate = async () => {
+            if (!sendCurr || !receiveCurr) return;
+
+            setLoading(true);
+            try {
+                const res = await fetch(
+                    `https://api.frankfurter.dev/v2/rate/${sendCurr}/${receiveCurr}`
+                );
+                if (!res.ok) throw new Error('Failed to fetch rate');
+                const data = await res.json();
+
+                if (!cancelled) {
+                    setRate(data.rate);
+                    setReceiveValue(Number(data.rate.toFixed(4)));
+                }
+            } catch (err) {
+                if (!cancelled) {
+                    console.error('Conversion error:', err);
+                }
+            } finally {
+                if (!cancelled) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchRate();
+
+        return () => { cancelled = true; };
+    }, [sendCurr, receiveCurr]);
+
+    // Fetch history
+    useEffect(() => {
+    let cancelled = false;
+
+    const fetchHistory = async () => {
+        if (!sendCurr || !receiveCurr) return;
+
+        const today = new Date();
+        const startDate = new Date();
+
+        switch (period) {
+            case '1d': startDate.setDate(today.getDate() - 1); break;
+            case '1w': startDate.setDate(today.getDate() - 7); break;
+            case '1m': startDate.setMonth(today.getMonth() - 1); break;
+            case '3m': startDate.setMonth(today.getMonth() - 3); break;
+            case '1y': startDate.setFullYear(today.getFullYear() - 1); break;
+            case '5y': startDate.setFullYear(today.getFullYear() - 5); break;
+        }
+
+        const formatDate = (d: Date) => d.toISOString().split('T')[0];
+
+        try {
+            // CORRECTED: v2/rates with from, to, and quotes params
+            const res = await fetch(
+                `https://api.frankfurter.dev/v2/rates?base=${sendCurr}&quotes=${receiveCurr}&from=${formatDate(startDate)}&to=${formatDate(today)}`
+            );
+            if (!res.ok) throw new Error('Failed to fetch history');
+            const data = await res.json();
+
+            // The response is an array of { date, rate } objects
+            const rates = data.map((r: HistoryProps) => ({
+                date: r.date,
+                rate: r.rate,
+            }));
+
+            if (!cancelled) setHistory(rates);
+        } catch (err) {
+            if (!cancelled) console.error('History fetch error:', err);
+        }
+    };
+
+    fetchHistory();
+
+    return () => { cancelled = true; };
+}, [sendCurr, receiveCurr, period]);
 
     // Get flag filename from ISO code
     const getFlagSrc = (isoCode: string) => {
@@ -101,7 +159,10 @@ export default function MainPart() {
                 currencies={currencies}
             />
             <SectionTwo 
-            
+                history={history}
+                receiveValue={receiveValue}
+                period={period}
+                setPeriod={setPeriod}
             />
         </main>
     );

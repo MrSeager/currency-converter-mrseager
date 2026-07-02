@@ -2,14 +2,12 @@
 //Components
 import { useState } from "react";
 import SectionTwoBtnTop from "./SectionTwoBtnTop";
-import SectionTwoItem from "./SectionTwoItem";
-import SectionTwoBtnPer from "./SectionTwoBtnPer";
+import SectionTwoHistory from "./SectionTwoHistory";
 //Types
-import { CurrPageProps } from "@/types/types";
+import { CurrPageProps, SectionTwoProps } from "@/types/types";
 
-export default function SectionTwo() {
+export default function SectionTwo({ history, receiveValue, period, setPeriod }: SectionTwoProps) {
     const [currPage, setCurrPage] = useState<CurrPageProps>('history');
-    const [period, setPeriod] = useState<string>('1d');
 
     return(
         <div className="w-full flex flex-col">
@@ -35,58 +33,32 @@ export default function SectionTwo() {
                     setCurrPage={setCurrPage}
                 />
             </div>
-            <div className="grid grid-cols-6 w-full gap-50 py-3">
-                <div className="grid grid-cols-4 gap-3 uppercase col-span-4">
-                    <SectionTwoItem 
-                        name="Open"
-                        value={0.8516}
-                    />
-                    <SectionTwoItem 
-                        name="Open"
-                        value={0.8516}
-                    />
-                    <SectionTwoItem 
-                        name="Open"
-                        value={0.8516}
-                    />
-                    <SectionTwoItem 
-                        name="Open"
-                        value={0.8516}
-                    />
+            <div className="flex">
+                <SectionTwoHistory 
+                    currPage={currPage} 
+                    period={period}
+                    setPeriod={setPeriod}
+
+                    history={history}
+                    receiveValue={receiveValue}
+                />
+                <div 
+                    className={`grid grid-cols-7 gap-5 py-3 overflow-hidden duration-300
+                                ${currPage === 'compare' ? 'w-full' : 'w-0'}`}
+                >
+                    Compare
                 </div>
-                <div className="col-span-2 py-auto flex items-center">
-                    <div className="flex w-full justify-between bg-[#161619] rounded-[10px]">
-                        <SectionTwoBtnPer 
-                            name="1d"
-                            period={period}
-                            setPeriod={setPeriod}
-                        />
-                        <SectionTwoBtnPer 
-                            name="1w"
-                            period={period}
-                            setPeriod={setPeriod}
-                        />
-                        <SectionTwoBtnPer 
-                            name="1m"
-                            period={period}
-                            setPeriod={setPeriod}
-                        />
-                        <SectionTwoBtnPer 
-                            name="3m"
-                            period={period}
-                            setPeriod={setPeriod}
-                        />
-                        <SectionTwoBtnPer 
-                            name="1y"
-                            period={period}
-                            setPeriod={setPeriod}
-                        />
-                        <SectionTwoBtnPer 
-                            name="5y"
-                            period={period}
-                            setPeriod={setPeriod}
-                        />
-                    </div>
+                <div 
+                    className={`grid grid-cols-7 gap-5 py-3 overflow-hidden duration-300
+                                ${currPage === 'favorites' ? 'w-full' : 'w-0'}`}
+                >
+                    Favorites
+                </div>
+                <div 
+                    className={`grid grid-cols-7 gap-5 py-3 overflow-hidden duration-300
+                                ${currPage === 'log' ? 'w-full' : 'w-0'}`}
+                >
+                    Log
                 </div>
             </div>
         </div>
